@@ -1,0 +1,48 @@
+# Minimal IMU-guided deblurring → OCR experiment.
+# Goal: show in ONE table that adding IMU (gyro) helps restore blurry text,
+# so OCR reads it better. Not chasing SOTA.
+
+seed: 42
+
+# en | ko | both  — start with "en" (cleanest signal). ko needs a CJK font (see README).
+language: en
+
+image:
+  height: 64
+  width: 256
+  channels: 1          # 1 = grayscale (simplest, fastest)
+
+text:
+  min_chars: 4
+  max_chars: 10
+  # Character pool for synthetic words (English MVP). Ignored when language: ko.
+  charset: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+  font_size: 34
+
+blur:
+  exposure_steps: 32   # trajectory samples during "exposure" (== imu.length)
+  max_shift_px: 14     # peak camera-shake extent, in pixels
+  smoothness: 0.85     # 0..1 low-pass on velocity; higher = smoother shake
+  kernel_size: 27      # motion-blur PSF grid (odd)
+
+imu:
+  length: 32           # gyro timesteps (must equal blur.exposure_steps)
+  axes: 2              # planar angular-velocity proxy (x, y)
+  noise_std: 0.03      # sensor noise added to the clean gyro signal
+
+data:
+  root: data
+  train: 2000
+  test: 300
+
+train:
+  epochs: 20
+  batch_size: 32
+  lr: 0.001
+  base_channels: 32    # network width (small on purpose)
+  device: auto         # auto | cpu | cuda | mps
+
+ocr:
+  # EasyOCR language codes. en -> ["en"]; ko -> ["ko","en"]; both -> ["ko","en"]
+  gpu: false           # set true on Colab GPU for faster OCR
+  normalize: true      # lowercase + collapse whitespace before CER (focus on chars, not case)

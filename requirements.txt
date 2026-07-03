@@ -1,0 +1,21 @@
+# --- Core: data generation + metrics (light, CPU, no ML framework) ---
+# Enough to run step 1 (OCR problem) data prep and step 2 (data gen) locally.
+numpy
+pillow
+scipy
+matplotlib          # only used to locate a bundled TTF font (DejaVuSans)
+pyyaml
+tqdm
+
+# --- OCR (step 1 & 5): pulls torch as a dependency ---
+easyocr
+
+# --- Training (steps 3 & 4) ---
+torch
+torchvision
+
+# Notes:
+#  - On Google Colab, torch/torchvision are preinstalled; `pip install easyocr` is enough.
+#  - Locally you can install just the "Core" block to run data generation + metrics tests:
+#      pip install numpy pillow scipy matplotlib pyyaml tqdm
+#  - For Korean text you also need a CJK font (see README).

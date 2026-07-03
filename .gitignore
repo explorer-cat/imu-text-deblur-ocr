@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual env
+.venv/
+
+# Generated data & results (regenerate with data_gen.py)
+data/
+results/
+
+# EasyOCR model cache (if run locally)
+.EasyOCR/
+
+# macOS
+.DS_Store
